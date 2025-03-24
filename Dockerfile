@@ -6,7 +6,7 @@ FROM golang:${GOLANG_VERSION} AS builder
 ARG TEMPO_VERSION
 ENV TEMPO_VERSION=${TEMPO_VERSION}
 
-RUN apt install -y git && \
+RUN apt-get install -y git=1:2.39.5-0+deb12u2 && \
     git clone --depth 1 --branch $TEMPO_VERSION https://github.com/grafana/tempo.git
 
 WORKDIR /go/tempo
