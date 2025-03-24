@@ -1,7 +1,7 @@
 FROM golang:1.24.1 AS builder
 
 RUN apt install -y git
-RUN git clone https://github.com/grafana/tempo.git
+RUN git clone https://github.com/grafana/tempo.git && git checkout v2.7.1
 
 WORKDIR /go/tempo
 
@@ -13,7 +13,7 @@ RUN apk add --update --no-cache ca-certificates
 
 FROM gcr.io/distroless/static-debian12:debug
 
-COPY --from=builder /go/bin/linux/tempo-amd64 /tempo
+COPY --from=builder /go/tempo/bin/linux/tempo-amd64 /tempo
 COPY --from=ca-certificates /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 SHELL ["/busybox/sh", "-c"]
