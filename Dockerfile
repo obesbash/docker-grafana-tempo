@@ -4,7 +4,7 @@ ARG TEMPO_VERSION=v2.7.1
 FROM golang:${GOLANG_VERSION}-alpine AS builder
 
 RUN apk add --no-cache git && \
-git clone --depth 1 --branch ${TEMPO_VERSION} https://github.com/grafana/tempo.git && \
+git clone --depth 1 --branch ${TEMPO_VERSION} https://github.com/grafana/tempo.git /go/tempo && \
 GIT_BRANCH=${git rev-parse --abbrev-ref HEAD} GIT_REVISION=${git rev-parse --short HEAD}
 
 WORKDIR /go/tempo
