@@ -1,8 +1,10 @@
 ARG GOLANG_VERSION=1.24.1
 ARG TEMPO_VERSION=v2.7.1
-ENV TEMPO_VERSION=${TEMPO_VERSION}
 
 FROM golang:${GOLANG_VERSION} AS builder
+
+ARG TEMPO_VERSION
+ENV TEMPO_VERSION=${TEMPO_VERSION}
 
 RUN apt install -y git && \
     git clone --depth 1 --branch $TEMPO_VERSION https://github.com/grafana/tempo.git
