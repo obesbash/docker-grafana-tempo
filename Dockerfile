@@ -1,12 +1,15 @@
-FROM golang:1.24.1 AS builder
+ARG GOLANG_VERSION=1.24.1
+ARG TEMPO_VERSION=v2.7.1
 
-RUN apt install -y git
-RUN git clone https://github.com/grafana/tempo.git
+FROM golang:${GOLANG_VERSION}-alpine AS builder
+
+RUN apk add --no-cache git && \
+git clone --depth 1 --branch ${TEMPO_VERSION} https://github.com/grafana/tempo.git && \
+GIT_BRANCH=${git rev-parse --abbrev-ref HEAD} GIT_REVISION=${git rev-parse --short HEAD}
 
 WORKDIR /go/tempo
 
-#RUN go mod download
-RUN git checkout v2.7.1 && CGO_ENABLED=0 GOAMD64=v2 go build -mod vendor -o ./bin/linux/tempo-amd64 ./cmd/tempo
+RUN CGO_ENABLED=0 GOAMD64=v2 go build -mod vendor -ldflags "-X main.Branch=${GIT_BRANCH} -X main.Revision=${GIT_REVISION} -X main.Version=${TEMPO_VERSION} -w" -o ./bin/linux/tempo-amd64 ./cmd/tempo
 
 FROM alpine:latest AS ca-certificates
 RUN apk add --update --no-cache ca-certificates
